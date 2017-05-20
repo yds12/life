@@ -1,6 +1,7 @@
 require "crsfml"
 require "./life/*"
 
+window_title = "life " + Life::VERSION
 width = 40
 height = 20
 tile_w = 10
@@ -9,7 +10,7 @@ tile_h = 10
 b = Board.new(tile_w, tile_h)
 
 window = SF::RenderWindow.new(
-  SF::VideoMode.new(b.width * tile_w, b.height * tile_h), "Title",
+  SF::VideoMode.new(b.width * tile_w, b.height * tile_h), window_title,
   settings: SF::ContextSettings.new(depth: 24, antialiasing: 1))
 window.vertical_sync_enabled = true
 
