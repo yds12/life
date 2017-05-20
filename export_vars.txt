@@ -1,0 +1,3 @@
+# To be able to find the VoidCSFML lib, need to run these commands:
+export LIBRARY_PATH=/usr/local/lib
+export LD_LIBRARY_PATH="$LIBRARY_PATH"
