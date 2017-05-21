@@ -1,19 +1,28 @@
 class Board
   getter :width, :height, :matrix, :connect_vertical, :connect_horizontal
 
-  def initialize(@tile_width : Int32, @tile_height : Int32)
+  def initialize
+    @tile_width = Life::TileWidth
+    @tile_height = Life::TileHeight
     @matrix = Array(Array(Bool)).new
-    @height = 0
-    @width = 0
-    read_files
+    @height = Life::Height
+    @width = Life::Width
+
+    if Life::GenerationMode == :file
+      read_from_file
+    elsif Life::GenerationMode == :random
+      generate_random
+    end
 
     # Defines if the top squares are neighbors of the bottom squares,
     # and the same for left and right border squares
-    @connect_vertical = true
-    @connect_horizontal = true
+    @connect_vertical = Life::ConnectVertical
+    @connect_horizontal = Life::ConnectHorizontal
   end
 
-  def initialize(@tile_width : Int32, @tile_height : Int32, previous : Board)
+  def initialize(previous : Board)
+    @tile_width = Life::TileWidth
+    @tile_height = Life::TileHeight
     @height = previous.matrix.size
     @width = previous.matrix.first.size
     @connect_vertical = previous.connect_vertical
@@ -25,7 +34,7 @@ class Board
   end
 
   def next
-    Board.new(@tile_width, @tile_height, self)
+    Board.new(self)
   end
 
   def successor(previous : Board)
@@ -34,7 +43,16 @@ class Board
         neighbors = previous.get_neighbors(x, y)
         count = neighbors.count(true)
         live = previous.matrix[x][y] # x is the line and y the column
-        @matrix[x][y] = (live && (count == 2 || count == 3)) || (count == 3)
+
+        if live && (count > Life::UnderPopulation &&
+                    count < Life::OverPopulation)
+          @matrix[x][y] = true # survives
+        elsif !live && (count >= Life::ReproductionMin &&
+                    count <= Life::ReproductionMax)
+          @matrix[x][y] = true # reproduces
+        else
+          @matrix[x][y] = false # dies or keeps dead
+        end
       end
     end
   end
@@ -59,7 +77,7 @@ class Board
     neighbors
   end
 
-  def read_files
+  def read_from_file
     board_file = "board.dat"
 
     File.open(board_file, "r") do |f|
@@ -78,12 +96,18 @@ class Board
     @width = @matrix.first.size
   end
 
+  def generate_random
+    @matrix = Array(Array(Bool)).new(@height) do
+      Array(Bool).new(@width) { rand(2) > 0 }
+    end
+  end
+
   def draw(window)
     @matrix.each_with_index do |line, l_ind|
       line.each_with_index do |value, c_ind|
         if value
           square = SF::RectangleShape.new()
-          square.fill_color = SF::Color::Black
+          square.fill_color = Life::CellColor 
           square.size = SF.vector2(@tile_width, @tile_height)
 
           square.position = 
