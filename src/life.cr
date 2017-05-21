@@ -11,7 +11,7 @@ window = SF::RenderWindow.new(
   settings: SF::ContextSettings.new(depth: 24, antialiasing: 0))
 window.vertical_sync_enabled = true
 
-cicle = 1
+cycle = 1
 running = Life::AutoStart
 next_step = false
 
@@ -46,7 +46,10 @@ while window.open?
 
   window.display()
 
-  puts "Cycle #{cicle}" #if cicle % 100 == 0
-  cicle += 1
+  if Life::PrintCycleInterval > 0 && cycle % Life::PrintCycleInterval == 0
+    puts "Cycle #{cycle}" 
+  end
+
+  cycle += 1
   sleep Life::CycleInterval if Life::CycleInterval > 0.0 
 end

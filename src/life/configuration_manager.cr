@@ -11,6 +11,7 @@ module Life
 
   CycleInterval = 0.01
   AutoStart = false
+  PrintCycleInterval = 100
 
   CellColor = SF.color(128 + rand(128), 128 + rand(128), 128 + rand(128))
   BoardColor = SF.color(rand(128), rand(128), rand(128))
