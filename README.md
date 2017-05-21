@@ -2,7 +2,7 @@
 
 [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway's_Game_of_Life) implemented in [Crystal](https://crystal-lang.org/) using [CrSFML](https://github.com/oprypin/crsfml/).
 
-![Life Screenshot](/screenshot/life01.png?raw=true)
+![Life Screenshot](/screenshot/life02.png?raw=true)
 
 ## Compiling
 
