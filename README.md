@@ -19,4 +19,4 @@ To run:
 
     ./life
 
-To change the initial configuration and size of the grid, please edit the file `board.dat`.
+To change the initial configuration and size of the grid and other settings, please edit the files `life.cfg` and `board.dat`. The file `board.dat` is only used if the `generation mode` is set to `file`, otherwise (`random`), the initial board state is randomly generated.

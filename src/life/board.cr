@@ -1,28 +1,35 @@
 class Board
   getter :width, :height, :matrix, :connect_vertical, :connect_horizontal
 
-  def initialize
-    @tile_width = Life::TileWidth
-    @tile_height = Life::TileHeight
-    @matrix = Array(Array(Bool)).new
-    @height = Life::Height
-    @width = Life::Width
+  @height : Int32
+  @width : Int32
+  @tile_width : Int32
+  @tile_height: Int32
+  @connect_vertical : Bool
+  @connect_horizontal : Bool
 
-    if Life::GenerationMode == :file
+  def initialize
+    @tile_width = Config.tile_width
+    @tile_height = Config.tile_height
+    @matrix = Array(Array(Bool)).new
+    @height = Config.height 
+    @width = Config.width 
+
+    if Config.generation_mode == :file
       read_from_file
-    elsif Life::GenerationMode == :random
+    elsif Config.generation_mode == :random
       generate_random
     end
 
     # Defines if the top squares are neighbors of the bottom squares,
     # and the same for left and right border squares
-    @connect_vertical = Life::ConnectVertical
-    @connect_horizontal = Life::ConnectHorizontal
+    @connect_vertical = Config.connect_vertical 
+    @connect_horizontal = Config.connect_horizontal 
   end
 
   def initialize(previous : Board)
-    @tile_width = Life::TileWidth
-    @tile_height = Life::TileHeight
+    @tile_width = Config.tile_width
+    @tile_height = Config.tile_height
     @height = previous.matrix.size
     @width = previous.matrix.first.size
     @connect_vertical = previous.connect_vertical
@@ -44,11 +51,11 @@ class Board
         count = neighbors.count(true)
         live = previous.matrix[x][y] # x is the line and y the column
 
-        if live && (count > Life::UnderPopulation &&
-                    count < Life::OverPopulation)
+        if live && (count > Config.under_population &&
+                    count < Config.over_population)
           @matrix[x][y] = true # survives
-        elsif !live && (count >= Life::ReproductionMin &&
-                    count <= Life::ReproductionMax)
+        elsif !live && (count >= Config.reproduction_min &&
+                    count <= Config.reproduction_max)
           @matrix[x][y] = true # reproduces
         else
           @matrix[x][y] = false # dies or keeps dead
@@ -107,7 +114,7 @@ class Board
       line.each_with_index do |value, c_ind|
         if value
           square = SF::RectangleShape.new()
-          square.fill_color = Life::CellColor 
+          square.fill_color = Config.cell_color 
           square.size = SF.vector2(@tile_width, @tile_height)
 
           square.position = 

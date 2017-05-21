@@ -1,21 +1,21 @@
 require "crsfml"
 require "./life/*"
 
-window_title = "life " + Life::VERSION
+window_title = "life " + Config.version
 
 b = Board.new
 
 window = SF::RenderWindow.new(
-  SF::VideoMode.new(b.width * Life::TileWidth, b.height * Life::TileHeight), 
+  SF::VideoMode.new(b.width * Config.tile_width, b.height * Config.tile_height), 
   window_title,
   settings: SF::ContextSettings.new(depth: 24, antialiasing: 0))
 window.vertical_sync_enabled = true
 
 cycle = 1
-running = Life::AutoStart
+running = Config.auto_start
 next_step = false
 
-window.clear Life::BoardColor 
+window.clear Config.board_color 
 b.draw window
 window.display()
 
@@ -32,6 +32,8 @@ while window.open?
     if event.is_a? SF::Event::KeyPressed
       if event.code == SF::Keyboard::Right
         next_step = true
+      elsif event.code == SF::Keyboard::Escape
+        window.close
       end
     end
   end
@@ -39,17 +41,17 @@ while window.open?
   next if !running && !next_step
   next_step = false
 
-  window.clear Life::BoardColor
+  window.clear Config.board_color 
 
   b.draw window
   b = b.next
 
   window.display()
 
-  if Life::PrintCycleInterval > 0 && cycle % Life::PrintCycleInterval == 0
+  if Config.print_cycle_interval > 0 && cycle % Config.print_cycle_interval == 0
     puts "Cycle #{cycle}" 
   end
 
   cycle += 1
-  sleep Life::CycleInterval if Life::CycleInterval > 0.0 
+  sleep Config.cycle_interval if Config.cycle_interval > 0.0 
 end
